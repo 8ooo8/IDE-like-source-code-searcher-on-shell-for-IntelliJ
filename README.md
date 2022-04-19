@@ -1,6 +1,6 @@
 # IDE-like Source Code Searcher on Shell
 
-Since IntelliJ doesn't allow searching multiple directories (codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like feature such as an instant jump to the source code file from the search result.
+Since IntelliJ doesn't allow searching multiple directories (codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as an instant jump to the source code file from the search result.
 
 This script currently supports Vim and IntelliJ as the editors for the source code files.
 
@@ -63,8 +63,12 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
     1. Chooes to read which file's preview
         1. ![How to select a file to preview][select-file-to-preview]
     1. Jump to the source code file from the search result
-        1. ![You may navigate to the source code file to read the whole file and edit][navigate-to-file]
+        1. ![You may navigate to the source code files to read the whole file and edit][navigate-to-file]
         1. IntelliJ or Vim will be used to load the source code file, depending on your [configuration](#configuration)
+        1. Check the (7) in [this](#vim-skills-for-using-this-script) to learn more about `\gp`
+    1. Jump to the next / previous occurrence of the keywords
+        1. ![`n` to jump to the next keywords occurrence][quick-jump-to-next-keywords-occurrence]
+        1. Check the (6)(iii) in [this](#vim-skills-for-using-this-script) to learn more about `n`
     1. Check [this](#vim-skills-for-using-this-script) to learn more about how to use Vim
 
 ## Configuration
@@ -90,12 +94,13 @@ GP_SEARCH_RESULT_FILENAME='GP_SEARCH_RESULT.txt' # the file generated to tempora
 
 Configuration for setting IntelliJ the source code file editor:
 1. Check [this][intellij-launcher-tutorial] to learn more about how to set `SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH` for IntelliJ.
-1. If you are a Mac user, you may need to search about how to create the IntelliJ command-line in your environment.
+1. If you are a Mac user, you may need to search about how to create the IntelliJ command-line launcher in your environment.
 1. Examples
     1. Windows > Git Bash
         1. `SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='/c/Program\ Files/JetBrains/IntelliJ\ IDEA\ Community\ Edition\ 2021.3.1/bin/idea64.exe'`
     1. MacOS > Zsh
         1. `SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='/Applications/JetBrains\ Toolbox.app/Contents/idea'`
+        1. Please note that you need to firstly create your command-line launcher
 
 
 ## Usage details
@@ -113,9 +118,9 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
     1. A string of regex.
     1. It defines the pattern to search for.
 1. `[-i|--ignore-case]`
-    1. An option to make the search case-insensitive.
+    1. An option to make the `<pattern>` search case-insensitive.
 1. `[-w|--word-regex]`
-    1. An option to request that the <pattern> has to match the full word to produce a match.
+    1. An option to request that the `<pattern>` has to match the full (not partial) word to produce a match.
 1. `[--include=<files>] [--exclude=<files>] [--exclude-dir=<directories>]`
     1. This script makes use of `grep` to do the search.
     1. The above options will be passed to `grep`.
@@ -144,7 +149,7 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
     1. `/<regex-pattern>` to search forward, `?<regex-pattern>` backward
     1. `n` to repeat the last search, `N` the last search in a reverse order
     1. Check [this][vim-search-tutorial] for more information
-1. Navigate to the file that you want to learn more
+1. Navigate to the souce code files that you want to learn more
     1. Go to the preview window
     1. Go to the line of code you are interested in
     1. Type `<Leader>gp` in normal mode
@@ -155,8 +160,10 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
 
 #### Advanced
 
-1. Go to the next or previous file preview when you are in the preview window
+1. Jump to the next or previous file's preview when you are in the preview window
     1. `{` and `}` in normal mode
+1. Jump to the 1st line / the last line
+    1. `gg` to the 1st line and `G` to the last line
 1. Preview the next or previous file in the file list, regardless of where you are on Vim
     1. `:cnext` (or `:cn`) to preview the next file, `:cprevious` (or `:cp`) the previous file
 1. Close and open the file catalouge
@@ -185,6 +192,7 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
 
 [demo]: <docs/demo.gif>
 [intellij-search-limit]: <docs/intellij-search-limitation.png>
+[quick-jump-to-next-keywords-occurrence]: <docs/quick-jump-to-next-keywords-occurrence.png>
 [navigate-to-file]: <docs/navigate-to-file.png>
 [select-file-to-preview]: <docs/select-file-to-preview.png>
 [vim-structure]: <docs/vim-structure.png>

@@ -58,6 +58,10 @@ function gp
         mapKeyToNavigateToFiles="${mapKeyToNavigateToFiles}:${openFileAtSpecificLine}<CR>"
     fi
     
+    ## Make the last searched patterns to be <pattern> so that simply pressing `n` may immediately jump to the next <pattern> occurrence
+    setLastSearchHistory="let @/ = '\\m${patternSearchVimRegex}'"
+    setLastSearchHistory+=' | call cursor(1, 1)' # move the cursor back to the 1st line
+
     ## Create a catalogue of the files whose content matches the specified pattern
     createFilesCatalogue='silent! vimgrep /\m^File: .\+/ %'
     showFilesCatalogue='copen'
@@ -104,9 +108,9 @@ function gp
                 xargs -S 10000 -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             else \
                 xargs -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
-        fi
+            fi
     
-    view "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightFilepath} | ${highlightPattern} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setupFilesCatalogue}"
+    view "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${setupFilesCatalogue}"
     rm -f "${GP_SEARCH_RESULT_FILENAME}"
 };
 function gpi { gp ${1} ${2} "-i ${@:3}"; };
