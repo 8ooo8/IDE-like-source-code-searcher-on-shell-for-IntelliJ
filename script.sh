@@ -6,9 +6,11 @@
 ## gp . 'patternA' # search all the files and directories (in your current directory by deafult) recursively for patternA
 
 # --- IDE-like-Source-Code-Searcher-on-Shell's configurable parameters ---
-## You may temporarily modify below configurable parameters on your shell before executing the search, or permanently by modifying their values in this script.
-### e.g. GP_MAXDEPTH=2; gp x x;
-GP_NUM_OF_CTX_LINES=10 # the number of lines to show before and after matches
+## You may temporarily modify below configurable parameters on your shell before executing the search, e.g. `GP_MAXDEPTH=2; gp x x`,
+## or permanently by modifying their values in this script
+GP_SOURCE_CODE_FILE_EDITOR='vim' # supported values: vim, intellij
+GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='' # leave it an empty value if you use Vim
+GP_NUM_OF_CTX_LINES=10 # the number of lines to show before and after matches of the keywords
 GP_MAXDEPTH=1 # the depth of directories to search for <parts-of-file-and-directory-names>, e.g. 1 value to search only current directory for <parts-of-file-and-directory-names>
 GP_EXCLUDE_DIR=('lib' 'libs' 'build' 'bin' '.?*')
 GP_EXCLUDE=('png' 'jpeg' 'jpg' 'tif' 'tiff' 'bmp' 'gif' 'eps' 'raw' 'cr2' 'nef' 'orf' 'sr2' 'swo' 'swp' '?*~' 'lib' 'dll' 'a' 'o' 'class' 'jar')
@@ -44,11 +46,17 @@ function gp
     ## Add mapped keys to navigate to the files listed in the search result
     getFilepath="let filepath = getline(search('\\m^File: .\\+', 'bn'))[6:]"
     getLineNum="let lineNum = substitute(getline('.'), '\\m^\\d\\+\\zs.*', '', '')"
-    editFile="execute('edit ' .fnameescape(filepath))"
-    goToLine="execute('keepj normal! ' .lineNum .'G')"
-    setCurrentLineScreenCenter="execute('normal! zz')"
-    unsetReadonly='setlocal noreadonly'
-    mapKeyToNavigateToFiles="noremap <silent> ${MAPPED_KEY_TO_NAVIGATE_TO_FILES} :${getFilepath}<CR>:${getLineNum}<CR>:${editFile}<CR>:${goToLine}<CR>:${setCurrentLineScreenCenter}<CR>:${unsetReadonly}<CR>"
+    mapKeyToNavigateToFiles="noremap <silent> ${MAPPED_KEY_TO_NAVIGATE_TO_FILES} :${getFilepath}<CR>:${getLineNum}<CR>"
+    if [[ "${GP_SOURCE_CODE_FILE_EDITOR}" = 'vim' ]]; then
+        editFile="execute('edit ' .fnameescape(filepath))"
+        goToLine="execute('keepj normal! ' .lineNum .'G')"
+        setCurrentLineScreenCenter="execute('normal! zz')"
+        unsetReadonly='setlocal noreadonly'
+        mapKeyToNavigateToFiles="${mapKeyToNavigateToFiles}:${getLineNum}<CR>:${editFile}<CR>:${goToLine}<CR>:${setCurrentLineScreenCenter}<CR>:${unsetReadonly}<CR>"
+    elif [[ "${GP_SOURCE_CODE_FILE_EDITOR}" = 'intellij' ]]; then
+        openFileAtSpecificLine="call system('${GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH} --line ' .lineNum .' \"' .getcwd() .'/' .filepath .'\"')"
+        mapKeyToNavigateToFiles="${mapKeyToNavigateToFiles}:${openFileAtSpecificLine}<CR>"
+    fi
     
     ## Create a catalogue of the files whose content matches the specified pattern
     createFilesCatalogue='silent! vimgrep /\m^File: .\+/ %'
@@ -89,7 +97,7 @@ function gp
     ## Command to search and print
     searchAndPrintCmd='printf "File: {}\n"; grep -nh "'${2}'" "{}" -A'${GP_NUM_OF_CTX_LINES}' -B'${GP_NUM_OF_CTX_LINES}' --exclude-dir='${excludedDir}' --exclude="*."'"${excludedFileExtensions} --exclude='${GP_SEARCH_RESULT_FILENAME}' ${extraArgumentsToGrep};"' printf "\n\n\n";'
     
-    ## Start searching and show the search result in Vim
+    ## Start searching and show the search result on Vim
     sh -c "find . -maxdepth ${GP_MAXDEPTH}" | grep "${1}" | cut -c 3- | \
         xargs -o -I{} sh -c "${getFilesWithMatchesCmd}" | \
             if [[ "${xargsAcceptS}" -eq 0 ]]; then \
@@ -104,4 +112,3 @@ function gp
 function gpi { gp ${1} ${2} "-i ${@:3}"; };
 function gpw { gp ${1} ${2} "-w ${@:3}"; };
 function gpiw { gp ${1} ${2} "-i -w ${@:3}"; };
-
