@@ -65,6 +65,7 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
         1. ![The snapshot of the Vim, with explanation to its structure][vim-structure]
     1. Chooes to read which file's preview
         1. ![How to select a file to preview][select-file-to-preview]
+        1. You may actually directly _**CLICK**_ on it with your mouse, instead of pressing `<Enter>`, to open the preview and _**SCROLL**_ to browse if you Vim supports this!
     1. Jump to the source code file from the search result
         1. ![You may navigate to the source code files to read the whole file and edit][navigate-to-file]
         1. IntelliJ or Vim will be used to load the source code file, depending on your [configuration](#configuration)
@@ -117,7 +118,7 @@ Configuration for setting IntelliJ the source code file editor:
 gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-regex] [--include=<files>] [--exclude=<files>] [--exclude-dir=<directories>]
 ```
 
-1. `<names-of-files-and-directories>`
+1. `<parts-of-file-and-directory-names>`
     1. A string of regex.
     1. It defines what to search in your current working directory.
 1. `<pattern>`

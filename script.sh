@@ -110,10 +110,11 @@ function gp
     
     ## Start searching and show the search result on Vim
     sh -c "find . -maxdepth ${GP_MAXDEPTH}" | grep "${1}" | cut -c 3- | \
-        xargs -o -I{} sh -c "${getFilesWithMatchesCmd}" | \
             if [[ "${xargsAcceptS}" -eq 0 ]]; then \
+                xargs -S 10000 -o -I{} sh -c "${getFilesWithMatchesCmd}" | \
                 xargs -S 10000 -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             else \
+                xargs -o -I{} sh -c "${getFilesWithMatchesCmd}" | \
                 xargs -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             fi
     
