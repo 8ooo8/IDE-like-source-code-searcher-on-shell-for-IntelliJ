@@ -1,6 +1,6 @@
-# IDE-like Source Code Searcher on Shell
+# IDE-like Source Code Searcher on Shell for IntelliJ
 
-Since IntelliJ doesn't allow searching multiple directories (codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as an instant jump to the source code file from the search result.
+Since IntelliJ doesn't allow searching multiple directories (related codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as an instant jump to the source code file from the search result.
 
 This script currently supports Vim and IntelliJ as the editors for the source code files.
 
@@ -48,11 +48,14 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
 1. Run below command on your Bash or Zsh
     1. Examples:
         ```sh
-        # Search dirA and dirB (in your current directory by default) recursively for patternA or patternB (case-insensitive)
-        gp 'dirA\|dirB' 'patternA\|patternB' -i
+        # Search dirA and dirB (in your current directory by default) recursively for patternA or patternB
+        gp 'dirA\|dirB' 'patternA\|patternB'
 
-        # Search all the files and directories (in your current directory by default) recursively for patternA
-        gp . 'patternA'
+        # Search codebaseA and codebaseB (in your current directory by default) recursively for patternA and at the same time, ignore the test/ directories
+        gp 'codebaseA\|codebaseB' 'patternA' --exclude-dir=test
+
+        # Search all the files and directories (in your current directory by default) recursively for patternA (case-insensitive)
+        gp . 'patternA' -i
         ```
     1. Syntax: `gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-regex] [--include=<files>] [--exclude=<files>] [--exclude-dir=<directories>]`
     1. Check [this](#shell-command) for the details
@@ -65,10 +68,13 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
     1. Jump to the source code file from the search result
         1. ![You may navigate to the source code files to read the whole file and edit][navigate-to-file]
         1. IntelliJ or Vim will be used to load the source code file, depending on your [configuration](#configuration)
-        1. Check the (7) in [this](#vim-skills-for-using-this-script) to learn more about `\gp`
-    1. Jump to the next / previous occurrence of the keywords
+        1. Check the (7) in [this](#basic) to learn more about `\gp`
+    1. Jump to the next / previous occurrence of the keywords (the `<pattern>` specified in your shell command)
         1. ![`n` to jump to the next keywords occurrence][quick-jump-to-next-keywords-occurrence]
-        1. Check the (6)(iii) in [this](#vim-skills-for-using-this-script) to learn more about `n`
+        1. Check the (6)(iii) in [this](#basic) to learn more about `n`
+    1. The last searched pattern on Vim are actually highlighted
+        1. ![Your last searched pattern on Vim are actually highlighted][last-searched-pattern-highlighted]
+        1. Check the (8) in [this](#basic) to learn how to turn off the highlighting
     1. Check [this](#vim-skills-for-using-this-script) to learn more about how to use Vim
 
 ## Configuration
@@ -157,6 +163,7 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
         1. `<Leader>gp` means `\gp` by default
     1. Afterwards, it will bring you to that line of code
     1. If you use Vim as the source code file editor, `<ctrl-6>` in normal mode to go back to the preview
+1. `:nohlsearch` (or `:noh`) to turn off the last searched pattern's highlighting
 
 #### Advanced
 
@@ -192,6 +199,7 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
 
 [demo]: <docs/demo.gif>
 [intellij-search-limit]: <docs/intellij-search-limitation.png>
+[last-searched-pattern-highlighted]: <docs/last-searched-pattern-highlighted.png>
 [quick-jump-to-next-keywords-occurrence]: <docs/quick-jump-to-next-keywords-occurrence.png>
 [navigate-to-file]: <docs/navigate-to-file.png>
 [select-file-to-preview]: <docs/select-file-to-preview.png>

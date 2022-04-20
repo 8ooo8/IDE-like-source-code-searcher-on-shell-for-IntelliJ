@@ -1,11 +1,15 @@
-# --- IDE-like-Source-Code-Searcher-on-Shell usage ---
+# --- IDE-like-Source-Code-Searcher-on-Shell-for-IntelliJ usage ---
 ## gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-regex] [--include=<files>] [--exclude=<files>] [--exclude-dir=<directories>]
 
-# --- IDE-like-Source-Code-Searcher-on-Shell examples ---
-## gp 'dirA\|dirB' 'patternA\|patternB' -i # search dirA and dirB (in your current directory by deafult) recursively for patternA or patternB (case-insensitive)
-## gp . 'patternA' # search all the files and directories (in your current directory by deafult) recursively for patternA
+# --- IDE-like-Source-Code-Searcher-on-Shell-for-IntelliJ examples ---
+## Search dirA and dirB (in your current directory by default) recursively for patternA or patternB
+### > gp 'dirA\|dirB' 'patternA\|patternB'
+## Search codebaseA and codebaseB (in your current directory by default) recursively for patternA and at the same time, ignore the test/ directories
+### > gp 'codebaseA\|codebaseB' 'patternA' --exclude-dir=test
+## Search all the files and directories (in your current directory by default) recursively for patternA (case-insensitive)
+### > gp . 'patternA' -i
 
-# --- IDE-like-Source-Code-Searcher-on-Shell's configurable parameters ---
+# --- IDE-like-Source-Code-Searcher-on-Shell-for-IntelliJ's configurable parameters ---
 ## You may temporarily modify below configurable parameters on your shell before executing the search, e.g. `GP_MAXDEPTH=2; gp x x`,
 ## or permanently by modifying their values in this script
 GP_SOURCE_CODE_FILE_EDITOR='vim' # supported values: vim, intellij
@@ -16,7 +20,7 @@ GP_EXCLUDE_DIR=('lib' 'libs' 'build' 'bin' '.?*')
 GP_EXCLUDE=('png' 'jpeg' 'jpg' 'tif' 'tiff' 'bmp' 'gif' 'eps' 'raw' 'cr2' 'nef' 'orf' 'sr2' 'swo' 'swp' '?*~' 'lib' 'dll' 'a' 'o' 'class' 'jar')
 GP_SEARCH_RESULT_FILENAME='GP_SEARCH_RESULT.txt' # the file generated to temporarily store the search result
 
-# --- IDE-like-Source-Code-Searcher-on-Shell ---
+# --- IDE-like-Source-Code-Searcher-on-Shell-for-IntelliJ ---
 function gp
 {
     MAPPED_KEY_TO_NAVIGATE_TO_FILES='<Leader>gp' # change this value if it has a conflict with your Vim setting
@@ -61,6 +65,9 @@ function gp
     ## Make the last searched patterns to be <pattern> so that simply pressing `n` may immediately jump to the next <pattern> occurrence
     setLastSearchHistory="let @/ = '\\m${patternSearchVimRegex}'"
     setLastSearchHistory+=' | call cursor(1, 1)' # move the cursor back to the 1st line
+
+    ## Highlight all the occurrences of the last searched pattern
+    highlightLastSearch='set hlsearch'
 
     ## Create a catalogue of the files whose content matches the specified pattern
     createFilesCatalogue='silent! vimgrep /\m^File: .\+/ %'
@@ -110,7 +117,7 @@ function gp
                 xargs -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             fi
     
-    view "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${setupFilesCatalogue}"
+    view "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${highlightLastSearch} | ${setupFilesCatalogue}"
     rm -f "${GP_SEARCH_RESULT_FILENAME}"
 };
 function gpi { gp ${1} ${2} "-i ${@:3}"; };
