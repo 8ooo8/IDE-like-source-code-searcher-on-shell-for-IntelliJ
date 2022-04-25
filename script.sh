@@ -118,7 +118,7 @@ function gp
                 xargs -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             fi
     
-    view "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${highlightLastSearch} | ${setupFilesCatalogue}"
+    vim -R "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${highlightLastSearch} | ${setupFilesCatalogue}"
     rm -f "${GP_SEARCH_RESULT_FILENAME}"
 };
 function gpi { gp ${1} ${2} "-i ${@:3}"; };
