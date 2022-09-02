@@ -1,11 +1,11 @@
 # IDE-like Source Code Searcher on Shell for IntelliJ
 
-Since IntelliJ doesn't allow searching multiple directories (related codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as an instant jump to the source code file from the search result.
+Since IntelliJ doesn't allow searching multiple directories (related codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as opening the source code file from the search result.
 
 This script currently supports Vim and IntelliJ as the editors for the source code files.
 
 1. If you want to work completely on the shell, then choose Vim
-1. If you choose to use IntelliJ, Vim will be used as the pager to show the search result and IntelliJ will be opened when you jump to the source file from the search result.
+1. If you choose to use IntelliJ, Vim will be used as the pager to show the search result and IntelliJ will be used to open the source code file from the search result.
 
 ## Table of content
 
@@ -23,7 +23,7 @@ This script currently supports Vim and IntelliJ as the editors for the source co
 
 ## Why did I make it?
 
-I coded on IntelliJ because my company had customization on it. However, IntelliJ (Community Edition) has below limitation.
+The code searching function of IntelliJ (Community Edition) has below limitation.
 
 ![IntelliJ's limitation in source code searching][intellij-search-limit]
 
@@ -34,7 +34,7 @@ This was really a pain to me since I quite often needed to search multiple relat
 1. Automatically ignores the build folder, library folder, .git/, .idea/ and etc.
 1. IDE-like feature: _**Do not only show the lines of code that contain the keywords, but there should also be a separate window to show the list of files that contains the keywords.**_
 1. IDE-like feature: _**May choose to read which file's search result from the above file list.**_
-1. IDE-like feature: _**May instantly jump to the source code file from the search result.**_
+1. IDE-like feature: _**May instantly open the source code file from the search result.**_
 
 Unfortunately, so far what I have found only met the first 3 points. Therefore, I wrote the script.
 
@@ -49,13 +49,13 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
     1. Examples:
         ```sh
         # Search dirA and dirB (in your current directory by default) recursively for patternA or patternB
-        gp 'dirA\|dirB' 'patternA\|patternB'
+        gp 'regex-of-dirA-partial-name\|regex-of-dirB-partial-name' 'regex-of-patternA\|regex-of-patternB'
 
-        # Search codebaseA and codebaseB (in your current directory by default) recursively for patternA and at the same time, ignore the test/ directories
-        gp 'codebaseA\|codebaseB' 'patternA' --exclude-dir=test
+        # Search the codebases (in your current directory by default) recursively for patternA and at the same time, ignore the *test (in glob pattern) and resources directories, ignore the *.txt (in glob pattern) files
+        gp 'regex-of-codebases-dir-partial-name' 'regex-of-patternA' --exclude-dir={*test, resources} --exclude=*.txt
 
         # Search all the files and directories (in your current directory by default) recursively for patternA (case-insensitive)
-        gp . 'patternA' -i
+        gp . 'regex-of-patternA' -i
         ```
     1. Syntax: `gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-regex] [--include=<files>] [--exclude=<files>] [--exclude-dir=<directories>]`
     1. Check [this](#shell-command) for the details
@@ -66,7 +66,7 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
     1. Chooes to read which file's preview
         1. ![How to select a file to preview][select-file-to-preview]
         1. You may actually directly _**CLICK**_ on it with your mouse, instead of pressing `<Enter>`, to open the preview and _**SCROLL**_ to browse if you Vim supports this!
-    1. Jump to the source code file from the search result
+    1. Open the source code file from the search result
         1. ![You may navigate to the source code files to read the whole file and edit][navigate-to-file]
         1. IntelliJ or Vim will be used to load the source code file, depending on your [configuration](#configuration)
         1. Check the (7) in [this](#basic) to learn more about `\gp`
