@@ -49,10 +49,10 @@ Unfortunately, so far what I have found only met the first 3 points. Therefore, 
     1. Examples:
         ```sh
         # Search dirA and dirB (in your current directory by default) recursively for patternA or patternB
-        gp 'regex-of-dirA-partial-name\|regex-of-dirB-partial-name' 'regex-of-patternA\|regex-of-patternB'
+        gp 'regex-of-dirA-partial-name\|regex-of-dirB-partial-name' regex-of-patternA\\\|regex-of-patternB
 
         # Search the codebases (in your current directory by default) recursively for patternA and at the same time, ignore the *test (in glob pattern) and resources directories, ignore the *.txt (in glob pattern) files
-        gp 'regex-of-codebases-dir-partial-name' 'regex-of-patternA' --exclude-dir={*test, resources} --exclude=*.txt
+        gp 'regex-of-codebases-dir-partial-name' 'regex-of-patternA' --exclude-dir={\*test,resources} --exclude=\*.txt
 
         # Search all the files and directories (in your current directory by default) recursively for patternA (case-insensitive)
         gp . 'regex-of-patternA' -i
