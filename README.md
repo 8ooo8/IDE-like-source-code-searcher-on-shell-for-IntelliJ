@@ -2,9 +2,9 @@
 
 Since IntelliJ doesn't allow searching multiple directories (related codebases) simultaneously, I have written a [portable script][script] on Bash and Zsh to do the job and unlike other source code searchers on shell, it also provides modern-IDE-like features such as opening the source code file from the search result.
 
-This script currently supports Vim and IntelliJ as the editors for the source code files.
+This script currently supports Vim, NeoVim (terminal version) and IntelliJ as the editors for the source code files.
 
-1. If you want to work completely on the shell, then choose Vim
+1. If you want to work completely on the shell, then choose Vim / NeoVim
 1. If you choose to use IntelliJ, Vim will be used as the pager to show the search result and IntelliJ will be used to open the source code file from the search result.
 
 ## Table of content
@@ -90,8 +90,8 @@ ENCODING='utf-8' # change this value if the encoding is not UTF-8
 ```sh
 ## You may temporarily modify below configurable parameters on your shell before executing the search, e.g. `GP_MAXDEPTH=2; gp x x`,
 ## or permanently by modifying their values in this script
-GP_SOURCE_CODE_FILE_EDITOR='vim' # supported values: vim, intellij
-GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='' # leave it an empty value if you use Vim
+GP_SOURCE_CODE_FILE_EDITOR='vim' # supported values: vim, nvim, intellij
+GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='' # leave it an empty value if you use Vim / NeoVim
 GP_NUM_OF_CTX_LINES=10 # the number of lines to show before and after matches of the keywords
 GP_MAXDEPTH=1 # the depth of directories to search for <parts-of-file-and-directory-names>, e.g. 1 value to search only current directory for <parts-of-file-and-directory-names>
 GP_EXCLUDE_DIR=('lib' 'libs' 'build' 'bin' '.?*')
@@ -192,6 +192,7 @@ gp <parts-of-file-and-directory-names> <pattern> [-i|--ignore-case] [-w|--word-r
     1. zsh 5.8 (x86_64-apple-darwin21.0)
     1. GNU bash, version 3.2.57(1)-release (arm64-apple-darwin21)
     1. VIM - Vi IMproved 8.2 (2019 Dec 12, compiled Sep 26 2021 21:11:52), macOS version - arm64, Included patches: 1-3458, Compiled by Homebrew
+    1. NVIM v0.5.0, Build type: Release, LuaJIT 2.1.0-beta3, Compiled by brew@HMBRW-A-001-M1-005.local
 1. Git Bash
     1. GNU bash, version 4.4.23(1)-release (x86_64-pc-msys)
     1. VIM - Vi IMproved 8.2 (2019 Dec 12, compiled Sep 21 2021 16:13:20), Included patches: 1-3441, Compiled by \<https://www.msys2.org/>

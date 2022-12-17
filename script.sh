@@ -12,7 +12,7 @@
 # --- IDE-like-Source-Code-Searcher-on-Shell-for-IntelliJ's configurable parameters ---
 ## You may temporarily modify below configurable parameters on your shell before executing the search, e.g. `GP_MAXDEPTH=2; gp x x`,
 ## or permanently by modifying their values in this script
-GP_SOURCE_CODE_FILE_EDITOR='vim' # supported values: vim, intellij
+GP_SOURCE_CODE_FILE_EDITOR='nvim' # supported values: vim, nvim, intellij
 GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='' # leave it an empty value if you use Vim
 GP_NUM_OF_CTX_LINES=10 # the number of lines to show before and after matches of the keywords
 GP_MAXDEPTH=1 # the depth of directories to search for <parts-of-file-and-directory-names>, e.g. 1 value to search only current directory for <parts-of-file-and-directory-names>
@@ -51,14 +51,14 @@ function gp
     getFilepath="let filepath = getline(search('\\m^File: .\\+', 'bn'))[6:]"
     getLineNum="let lineNum = substitute(getline('.'), '\\m^\\d\\+\\zs.*', '', '')"
     mapKeyToNavigateToFiles="noremap <silent> ${MAPPED_KEY_TO_NAVIGATE_TO_FILES} :${getFilepath}<CR>:${getLineNum}<CR>"
-    if [[ "${GP_SOURCE_CODE_FILE_EDITOR}" = 'vim' ]]; then
+    if [[ "${GP_SOURCE_CODE_FILE_EDITOR}" = 'vim' || "${GP_SOURCE_CODE_FILE_EDITOR}" == 'nvim' ]]; then
         editFile="execute('edit ' .fnameescape(filepath))"
         goToLine="execute('keepj normal! ' .lineNum .'G')"
         setCurrentLineScreenCenter="execute('normal! zz')"
         unsetReadonly='setlocal noreadonly'
         mapKeyToNavigateToFiles="${mapKeyToNavigateToFiles}:${getLineNum}<CR>:${editFile}<CR>:${goToLine}<CR>:${setCurrentLineScreenCenter}<CR>:${unsetReadonly}<CR>"
     elif [[ "${GP_SOURCE_CODE_FILE_EDITOR}" = 'intellij' ]]; then
-        openFileAtSpecificLine="call system('${GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH} --line ' .lineNum .' \"' .getcwd() .'/' .filepath .'\"')"
+        openFileAtSpecificLine="call system('${GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH} --line ' .lineNum .' \\\"' .getcwd() .'/' .filepath .'\\\"')"
         mapKeyToNavigateToFiles="${mapKeyToNavigateToFiles}:${openFileAtSpecificLine}<CR>"
     fi
     
@@ -118,7 +118,8 @@ function gp
                 xargs -o -I{} sh -c "${searchAndPrintCmd}" > "${GP_SEARCH_RESULT_FILENAME}"; \
             fi
     
-    vim -R "${GP_SEARCH_RESULT_FILENAME}" -c "${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${highlightLastSearch} | ${setupFilesCatalogue}"
+    if [[ ${GP_SOURCE_CODE_FILE_EDITOR} == 'nvim' ]]; then vimVariation='nvim'; else vimVariation='vim'; fi
+    sh -c "${vimVariation} -R '${GP_SEARCH_RESULT_FILENAME}' -c \"${setHidden} | ${setUTF8} | ${unfoldAll} | ${setCursorline} | ${setLineNum} | ${setSyntaxHighlight} | ${highlightPattern} | ${highlightFilepath} | ${highlightLineNum} | ${mapKeyToNavigateToFiles} | ${setLastSearchHistory} | ${highlightLastSearch} | ${setupFilesCatalogue}\""
     rm -f "${GP_SEARCH_RESULT_FILENAME}"
 };
 function gpi { gp ${1} ${2} "-i ${@:3}"; };
