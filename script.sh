@@ -15,7 +15,7 @@
 GP_SOURCE_CODE_FILE_EDITOR='nvim' # supported values: vim, nvim, intellij
 GP_SOURCE_CODE_FILE_EDITOR_LAUNCHER_PATH='' # leave it an empty value if you use Vim
 GP_NUM_OF_CTX_LINES=10 # the number of lines to show before and after matches of the keywords
-GP_MAXDEPTH=1 # the depth of directories to search for <parts-of-file-and-directory-names>, e.g. 1 value to search only current directory for <parts-of-file-and-directory-names>
+GP_MAXDEPTH=50 # the depth of directories to search for <parts-of-file-and-directory-names>, e.g. 1 value to search only current directory for <parts-of-file-and-directory-names>
 GP_EXCLUDE_DIR=('lib' 'libs' 'build' 'bin' '.?*')
 GP_EXCLUDE=('png' 'jpeg' 'jpg' 'tif' 'tiff' 'bmp' 'gif' 'eps' 'raw' 'cr2' 'nef' 'orf' 'sr2' 'swo' 'swp' '?*~' 'lib' 'dll' 'a' 'o' 'class' 'jar')
 GP_SEARCH_RESULT_FILENAME='GP_SEARCH_RESULT.txt' # the file generated to temporarily store the search result
